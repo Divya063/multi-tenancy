@@ -28,6 +28,7 @@ require (
 )
 
 replace (
+	github.com/kubernetes-sigs/multi-tenancy => github.com/Divya063/multi-tenancy v0.0.0-20200703122503-2307447baef6
 	k8s.io/api => k8s.io/api v0.18.3
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.18.3
 	k8s.io/apimachinery => k8s.io/apimachinery v0.18.3

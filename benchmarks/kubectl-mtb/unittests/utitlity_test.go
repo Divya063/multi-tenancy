@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/rbac/v1"
 	"sigs.k8s.io/kind/pkg/cluster"
 
@@ -55,26 +54,26 @@ func TestCreateTenant(t *testing.T) {
 
 	g := gomega.NewGomegaWithT(t)
 
-	sa := corev1.ServiceAccount{
-		TypeMeta: metav1.TypeMeta{
-			Kind: "ServiceAccount",
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "tenant-admin-sb",
-			Namespace: "default",
-		},
-	}
+	// sa := corev1.ServiceAccount{
+	// 	TypeMeta: metav1.TypeMeta{
+	// 		Kind: "ServiceAccount",
+	// 	},
+	// 	ObjectMeta: metav1.ObjectMeta{
+	// 		Name:      "t1-admin1",
+	// 		Namespace: "default",
+	// 	},
+	// }
 	tenant := &tenancyv1alpha1.Tenant{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "tenant-b",
+			Name: "tenant-sample",
 		},
 		Spec: tenancyv1alpha1.TenantSpec{
-			TenantAdminNamespaceName: "tenant-admin-sa",
+			TenantAdminNamespaceName: "tenant1admin",
 			TenantAdmins: []v1.Subject{
 				{
 					Kind:      "ServiceAccount",
-					Name:      sa.ObjectMeta.Name,
-					Namespace: sa.ObjectMeta.Namespace,
+					Name:      "t1-user1",
+					Namespace: "default",
 				},
 			},
 		},
@@ -82,11 +81,11 @@ func TestCreateTenant(t *testing.T) {
 
 	instance := &tenancyv1alpha1.TenantNamespace{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "tenant1ns",
+			Name:      "tenantnamespace-sample",
 			Namespace: tenant.Spec.TenantAdminNamespaceName,
 		},
 		Spec: tenancyv1alpha1.TenantNamespaceSpec{
-			Name: "t1admin",
+			Name: "t1-ns1",
 		},
 	}
 
@@ -102,21 +101,24 @@ func TestCreateTenant(t *testing.T) {
 	g.Expect(tenant2.AddManager(mgr, recFnTenant)).NotTo(gomega.HaveOccurred())
 
 	//start tenantnamespace control
-	err = tenantnamespace.Add(mgr)
-	if err != nil {
-		fmt.Println(err)
-	}
+	recFnTenantNS, _ := tenantnamespace.SetupTestReconcile(tenantnamespace.NewReconciler(mgr))
+	fmt.Println(recFnTenantNS)
+	g.Expect(tenantnamespace.AddManager(mgr, recFnTenantNS)).NotTo(gomega.HaveOccurred())
+	// err = tenantnamespace.Add(mgr)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	stopMgr, mgrStopped := StartTestManager(mgr, g)
 	defer func() {
 		close(stopMgr)
 		mgrStopped.Wait()
 	}()
-	err = c.Create(context.TODO(), &sa)
-	if err != nil {
-		t.Logf("Failed to create tenant admin: %+v with error: %+v", sa.ObjectMeta.Name, err)
-		return
-	}
+	// err = c.Create(context.TODO(), &sa)
+	// if err != nil {
+	// 	t.Logf("Failed to create tenant admin: %+v with error: %+v", sa.ObjectMeta.Name, err)
+	// 	return
+	// }
 
 	err = c.Create(context.TODO(), tenant)
 	if err != nil {
