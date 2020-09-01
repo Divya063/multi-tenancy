@@ -18,4 +18,4 @@ mkdir -p $(go env GOPATH)/bin
 hack_dir=$(dirname ${BASH_SOURCE})
 
 echo "Running 'make test'"
-make test -C "$hack_dir/.."
+make tests -C "$hack_dir/.."

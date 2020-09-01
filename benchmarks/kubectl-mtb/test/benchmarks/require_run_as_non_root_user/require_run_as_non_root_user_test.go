@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/onsi/gomega"
@@ -17,7 +16,6 @@ import (
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"sigs.k8s.io/kind/pkg/cluster"
 	"sigs.k8s.io/multi-tenancy/benchmarks/kubectl-mtb/test/utils/log"
 	"sigs.k8s.io/multi-tenancy/benchmarks/kubectl-mtb/test/utils/unittestutils"
 	"sigs.k8s.io/multi-tenancy/benchmarks/kubectl-mtb/types"
@@ -43,22 +41,6 @@ func TestMain(m *testing.M) {
 
 	// Tenant setup function
 	setUp := func() error {
-		provider := cluster.NewProvider()
-
-		// List the clusters available
-		clusterList, err := provider.List()
-		clusters := strings.Join(clusterList, " ")
-
-		// Checks if the main cluster (test) is running
-		if strings.Contains(clusters, "kubectl-mtb-suite") {
-			clusterExists = true
-		} else {
-			clusterExists = false
-			err := kind.CreateCluster()
-			if err != nil {
-				return err
-			}
-		}
 
 		kubecfgFlags := genericclioptions.NewConfigFlags(false)
 

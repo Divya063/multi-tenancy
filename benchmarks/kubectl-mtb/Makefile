@@ -3,6 +3,7 @@
 
 GOBIN ?= $(shell go env GOPATH)/bin
 DIRS=./pkg/... ./cmd/... ./internal/... 
+KREW_CKSM=$(shell sha256sum bin/kubectl-hns.tar.gz | cut -d " " -f 1)
 
 # Builds all binaries
 build:

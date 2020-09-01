@@ -1,0 +1,18 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: mtb
+spec:
+  version: --- will be populated by make krew-build ---
+  homepage: https://github.com/kubernetes-sigs/multi-tenancy/benchmarks/kubectl-mtb
+  platforms:
+    - uri: https://github.com/example/foo/releases/v1.0.tar.gz
+      selector:
+        matchLabels:
+          os: linux
+          arch: amd64
+      sha256: --- will be populated by make krew-build ---
+      files:
+        - from: "bin/kubectl/kubectl-hns"
+          to: "."
+      bin: "./kubectl-hns"
