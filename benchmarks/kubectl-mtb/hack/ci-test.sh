@@ -17,5 +17,5 @@ export PATH=$(go env GOPATH)/bin:$PATH
 mkdir -p $(go env GOPATH)/bin
 hack_dir=$(dirname ${BASH_SOURCE})
 
-echo "Running 'make test'"
+echo "Running 'make tests'"
 make tests -C "$hack_dir/.."

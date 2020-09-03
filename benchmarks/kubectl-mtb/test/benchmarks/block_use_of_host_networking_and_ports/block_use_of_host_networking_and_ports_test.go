@@ -37,7 +37,6 @@ type TestFunction func(t *testing.T) (bool, bool)
 
 func TestMain(m *testing.M) {
 	// Create kind instance
-	kind := &unittestutils.KindCluster{}
 
 	// Tenant setup function
 	setUp := func() error {
@@ -76,23 +75,6 @@ func TestMain(m *testing.M) {
 
 	// exec test and this returns an exit code to pass to os
 	retCode := m.Run()
-
-	tearDown := func() error {
-		var err error
-		if !clusterExists {
-			err := kind.DeleteCluster()
-			if err != nil {
-				return err
-			}
-		}
-		return err
-	}
-
-	// exec tearDown function
-	err = tearDown()
-	if err != nil {
-		g.Expect(err).NotTo(gomega.HaveOccurred())
-	}
 
 	os.Exit(retCode)
 }
